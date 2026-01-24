@@ -36,6 +36,12 @@ public class MainInfo {
     @Column(length = 50)
     private String changeNumber2;
 
+    @Column(length = 50)
+    private String status;
+
+    @Column(length = 500)
+    private String rejectionReason;
+
     public Long getId() {
         return id;
     }
@@ -103,5 +109,21 @@ public class MainInfo {
 
     public void setChangeNumber2(String changeNumber2) {
         this.changeNumber2 = changeNumber2;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }

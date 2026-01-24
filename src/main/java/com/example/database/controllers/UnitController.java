@@ -75,6 +75,9 @@ public class UnitController {
 
     @PostMapping("initReference")
     ResponseEntity<ReferenceResponse> initReference(@RequestBody MainInfo mainInfo) {
+        if (mainInfo.getStatus() == null || mainInfo.getStatus().isEmpty()) {
+            mainInfo.setStatus("Новая");
+        }
         mainInfoRepository.save(mainInfo);
         contactInfoRepository.save(new ContactInformation(mainInfo.getId()));
 
@@ -244,6 +247,15 @@ public class UnitController {
     @PutMapping("updateMainInfo")
     ResponseEntity<String> updateMainInfo(@RequestBody MainInfo mainInfo) {
         mainInfoRepository.save(mainInfo);
+        return ResponseEntity.ok("Updated");
+    }
+
+    @PutMapping("updateStatus")
+    ResponseEntity<String> updateStatus(@RequestBody UpdateReportStatusRequest request) {
+        MainInfo info = mainInfoRepository.findById(request.getId()).orElseThrow();
+        info.setStatus(request.getStatus());
+        info.setRejectionReason(request.getRejectionReason());
+        mainInfoRepository.save(info);
         return ResponseEntity.ok("Updated");
     }
 
