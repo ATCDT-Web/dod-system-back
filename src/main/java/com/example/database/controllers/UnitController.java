@@ -6,16 +6,24 @@ import com.example.database.enteties.*;
 import com.example.database.repositories.*;
 import com.example.database.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayInputStream;
 
 
 @RestController
 @RequestMapping("api/unit")
 public class UnitController {
+
+    @Autowired
+    ExcelExportService excelService;
     @Autowired
     MainInfoRepository mainInfoRepository;
 
@@ -130,6 +138,94 @@ public class UnitController {
     @GetMapping("getReportUnit8")
     ResponseEntity<Unit8Response> getReportUnit8(@RequestParam String organizationName) {
         return ResponseEntity.ok(unit8Service.sumAllByOrganizationName(organizationName));
+    }
+
+    @GetMapping("/export/unit3/{organizationName}")
+    public ResponseEntity<ByteArrayResource> exportUnit3Excel(@PathVariable String organizationName) {
+        Unit3And5Response summary =  unit3Service.sumAllByOrganizationName(organizationName);
+        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 16);
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=unit3-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping("/export/unit4/{organizationName}")
+    public ResponseEntity<ByteArrayResource> exportUnit4Excel(@PathVariable String organizationName) {
+        Unit4Response summary =  unit4Service.sumAllByOrganizationName(organizationName);
+        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 17);
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=unit4-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping("/export/unit5/{organizationName}")
+    public ResponseEntity<ByteArrayResource> exportUnit5Excel(@PathVariable String organizationName) {
+        Unit3And5Response summary =  unit5Service.sumAllByOrganizationName(organizationName);
+        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 5);
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=unit5-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping("/export/unit6/{organizationName}")
+    public ResponseEntity<ByteArrayResource> exportUnit6Excel(@PathVariable String organizationName) {
+        Unit6Response summary =  unit6Service.sumAllByOrganizationName(organizationName);
+        ByteArrayInputStream in = excelService.exportUnit6SummaryToExcel(summary);
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=unit6-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+    @GetMapping("/export/unit7/{organizationName}")
+    public ResponseEntity<ByteArrayResource> exportUnit7Excel(@PathVariable String organizationName) {
+        Unit7Response summary =  unit7Service.sumAllByOrganizationName(organizationName);
+        ByteArrayInputStream in = excelService.exportUnit78SummaryToExcel(summary);
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=unit7-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+    @GetMapping("/export/unit8/{organizationName}")
+    public ResponseEntity<ByteArrayResource> exportUnit8Excel(@PathVariable String organizationName) {
+        Unit8Response summary =  unit8Service.sumAllByOrganizationName(organizationName);
+        ByteArrayInputStream in = excelService.exportUnit78SummaryToExcel(summary);
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=unit8-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
     }
 
 
@@ -381,5 +477,8 @@ public class UnitController {
         unit18Repository.save(unit18);
         return ResponseEntity.ok("Updated");
     }
+
+
+
 
 }
