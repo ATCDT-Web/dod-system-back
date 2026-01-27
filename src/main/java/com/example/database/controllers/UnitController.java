@@ -6,6 +6,7 @@ import com.example.database.dto.*;
 import com.example.database.enteties.*;
 import com.example.database.repositories.*;
 import com.example.database.service.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -82,33 +83,12 @@ public class UnitController {
     @Autowired
     Unit18Repository unit18Repository;
 
+    @Autowired
+    InitService initService;
+
     @PostMapping("initReference")
     ResponseEntity<ReferenceResponse> initReference(@RequestBody MainInfo mainInfo) {
-        if (mainInfo.getStatus() == null || mainInfo.getStatus().isEmpty()) {
-            mainInfo.setStatus("Новая");
-        }
-        mainInfoRepository.save(mainInfo);
-        contactInfoRepository.save(new ContactInformation(mainInfo.getId()));
-
-        unit1Repository.save(new Unit1(mainInfo.getId()));
-        unit2Repository.save(new Unit2(mainInfo.getId()));
-        unit3Service.save(new Unit3(mainInfo.getId()));
-        unit4Service.save(new Unit4(mainInfo.getId()));
-        unit5Service.save(new Unit5(mainInfo.getId()));
-        unit6Service.save(new Unit6(mainInfo.getId()));
-        unit7Service.save(new Unit7(mainInfo.getId()));
-        unit8Service.save(new Unit8(mainInfo.getId()));
-        unit9Repository.save(new Unit9(mainInfo.getId()));
-        unit10Repository.save(new Unit10(mainInfo.getId()));
-        unit11Repository.save(new Unit11(mainInfo.getId()));
-        unit12Repository.save(new Unit12(mainInfo.getId()));
-        unit13Repository.save(new Unit13(mainInfo.getId()));
-        unit14Repository.save(new Unit14(mainInfo.getId()));
-        unit15Repository.save(new Unit15(mainInfo.getId()));
-        unit16Repository.save(new Unit16(mainInfo.getId()));
-        unit17Repository.save(new Unit17(mainInfo.getId()));
-        unit18Repository.save(new Unit18(mainInfo.getId()));
-        return ResponseEntity.ok(new ReferenceResponse(mainInfo.getId()));
+        return initService.initReference(mainInfo);
     }
 
     @GetMapping("getReportUnit1")
