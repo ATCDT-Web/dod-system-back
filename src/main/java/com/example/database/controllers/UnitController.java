@@ -1,6 +1,7 @@
 package com.example.database.controllers;
 
 
+import com.example.database.common.HeaderType;
 import com.example.database.dto.*;
 import com.example.database.enteties.*;
 import com.example.database.repositories.*;
@@ -143,7 +144,7 @@ public class UnitController {
     @GetMapping("/export/unit3/{organizationName}")
     public ResponseEntity<ByteArrayResource> exportUnit3Excel(@PathVariable String organizationName) {
         Unit3And5Response summary =  unit3Service.sumAllByOrganizationName(organizationName);
-        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 16);
+        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 16,6, HeaderType.UNIT3);
 
         ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
 
@@ -158,7 +159,7 @@ public class UnitController {
     @GetMapping("/export/unit4/{organizationName}")
     public ResponseEntity<ByteArrayResource> exportUnit4Excel(@PathVariable String organizationName) {
         Unit4Response summary =  unit4Service.sumAllByOrganizationName(organizationName);
-        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 17);
+        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 17,14, HeaderType.UNIT4);
 
         ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
 
@@ -173,7 +174,7 @@ public class UnitController {
     @GetMapping("/export/unit5/{organizationName}")
     public ResponseEntity<ByteArrayResource> exportUnit5Excel(@PathVariable String organizationName) {
         Unit3And5Response summary =  unit5Service.sumAllByOrganizationName(organizationName);
-        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 5);
+        ByteArrayInputStream in = excelService.exportUnit345SummaryToExcel(summary, 5,23, HeaderType.UNIT5);
 
         ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
 
@@ -202,7 +203,7 @@ public class UnitController {
     @GetMapping("/export/unit7/{organizationName}")
     public ResponseEntity<ByteArrayResource> exportUnit7Excel(@PathVariable String organizationName) {
         Unit7Response summary =  unit7Service.sumAllByOrganizationName(organizationName);
-        ByteArrayInputStream in = excelService.exportUnit78SummaryToExcel(summary);
+        ByteArrayInputStream in = excelService.exportUnit78SummaryToExcel(summary,34);
 
         ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
 
@@ -216,7 +217,7 @@ public class UnitController {
     @GetMapping("/export/unit8/{organizationName}")
     public ResponseEntity<ByteArrayResource> exportUnit8Excel(@PathVariable String organizationName) {
         Unit8Response summary =  unit8Service.sumAllByOrganizationName(organizationName);
-        ByteArrayInputStream in = excelService.exportUnit78SummaryToExcel(summary);
+        ByteArrayInputStream in = excelService.exportUnit78SummaryToExcel(summary,44);
 
         ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
 
