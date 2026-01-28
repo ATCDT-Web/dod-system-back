@@ -4,9 +4,7 @@ package com.example.database.controllers;
 import com.example.database.common.HeaderType;
 import com.example.database.dto.*;
 import com.example.database.enteties.*;
-import com.example.database.repositories.*;
 import com.example.database.service.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -38,16 +36,16 @@ public class UnitController {
     private ReportDeletionService reportDeletionService;
 
     @Autowired
-    MainInfoRepository mainInfoRepository;
+    MainInfoService mainInfoService;
 
     @Autowired
-    ContactInfoRepository contactInfoRepository;
+    ContactInfoService contactInfoService;
 
     @Autowired
-    Unit1Repository unit1Repository;
+    Unit1Service unit1Service;
 
     @Autowired
-    Unit2Repository unit2Repository;
+    Unit2Service unit2Service;
 
     @Autowired
     Unit3Service unit3Service;
@@ -67,34 +65,34 @@ public class UnitController {
     Unit8Service unit8Service;
 
     @Autowired
-    Unit9Repository unit9Repository;
+    Unit9Service unit9Service;
 
     @Autowired
-    Unit10Repository unit10Repository;
+    Unit10Service unit10Service;
     @Autowired
-    Unit11Repository unit11Repository;
+    Unit11Service unit11Service;
 
     @Autowired
-    Unit12Repository unit12Repository;
+    Unit12Service unit12Service;
 
     @Autowired
-    Unit13Repository unit13Repository;
+    Unit13Service unit13Service;
 
     @Autowired
-    Unit14Repository unit14Repository;
+    Unit14Service unit14Service;
 
     @Autowired
-    Unit15Repository unit15Repository;
+    Unit15Service unit15Service;
 
     @Autowired
-    Unit16Repository unit16Repository;
+    Unit16Service unit16Service;
     @Autowired
-    Unit17Repository unit17Repository;
+    Unit17Service unit17Service;
 
     @Autowired
-    Unit18Repository unit18Repository;
+    Unit18Service unit18Service;
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
 
     @PostMapping("initReference")
@@ -117,7 +115,7 @@ public class UnitController {
     }
     @GetMapping("getReportUnit1")
     ResponseEntity<Unit1Response> getReportUnit1(@RequestParam String organizationName) {
-        return ResponseEntity.ok(unit1Repository.sumAllByOrganizationName(organizationName));
+        return ResponseEntity.ok(unit1Service.sumAllByOrganizationName(organizationName));
     }
     @GetMapping("getReportUnit3")
     ResponseEntity<Unit3And5Response> getReportUnit3(@RequestParam String organizationName) {
@@ -235,7 +233,7 @@ public class UnitController {
 
     @GetMapping("/export/unit/{unit}/district/{district}")
     public ResponseEntity<ByteArrayResource> exportUnitByDistrict(@PathVariable int unit, @PathVariable String district) {
-        List<String> orgs = userRepository.findByDistrict(district).stream()
+        List<String> orgs = userService.findByDistrict(district).stream()
                 .map(User::getEducationalInstitution)
                 .filter(name -> name != null && !name.isBlank())
                 .collect(Collectors.toSet())
@@ -298,7 +296,7 @@ public class UnitController {
 
     @GetMapping("getMainInfoList")
     ResponseEntity<Page<MainInfo>> getMainInfo(@PageableDefault(page = 0, size = 5) Pageable pageable) {
-        Page<MainInfo> result = mainInfoRepository.findAllProjected(pageable);
+        Page<MainInfo> result = mainInfoService.findAllProjected(pageable);
         if (result.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -307,22 +305,22 @@ public class UnitController {
 
     @GetMapping("getContactInfo")
     ResponseEntity<ContactInformation> getContactInfoById(Long id) {
-        return ResponseEntity.ok(contactInfoRepository.findById(id).get());
+        return ResponseEntity.ok(contactInfoService.findById(id));
     }
 
     @GetMapping("getMainInfo")
     ResponseEntity<MainInfo> getMainInfoById(Long id) {
-        return ResponseEntity.ok(mainInfoRepository.findById(id).get());
+        return ResponseEntity.ok(mainInfoService.findById(id));
     }
 
     @GetMapping("getUnit1")
     ResponseEntity<Unit1> getUnit1ById(Long id) {
-        return ResponseEntity.ok(unit1Repository.findById(id).get());
+        return ResponseEntity.ok(unit1Service.findById(id));
     }
 
     @GetMapping("getUnit2")
     ResponseEntity<Unit2> getUnit2ById(Long id) {
-        return ResponseEntity.ok(unit2Repository.findById(id).get());
+        return ResponseEntity.ok(unit2Service.findById(id));
     }
 
     @GetMapping("getUnit3")
@@ -357,85 +355,85 @@ public class UnitController {
 
     @GetMapping("getUnit9")
     ResponseEntity<Unit9> getUnit9ById(Long id) {
-        return ResponseEntity.ok(unit9Repository.findById(id).get());
+        return ResponseEntity.ok(unit9Service.findById(id));
     }
 
     @GetMapping("getUnit10")
     ResponseEntity<Unit10> getUnit10ById(Long id) {
-        return ResponseEntity.ok(unit10Repository.findById(id).get());
+        return ResponseEntity.ok(unit10Service.findById(id));
     }
 
     @GetMapping("getUnit11")
     ResponseEntity<Unit11> getUnit11ById(Long id) {
-        return ResponseEntity.ok(unit11Repository.findById(id).get());
+        return ResponseEntity.ok(unit11Service.findById(id));
     }
 
     @GetMapping("getUnit12")
     ResponseEntity<Unit12> getUnit12ById(Long id) {
-        return ResponseEntity.ok(unit12Repository.findById(id).get());
+        return ResponseEntity.ok(unit12Service.findById(id));
     }
 
     @GetMapping("getUnit13")
     ResponseEntity<Unit13> getUnit13ById(Long id) {
-        return ResponseEntity.ok(unit13Repository.findById(id).get());
+        return ResponseEntity.ok(unit13Service.findById(id));
     }
 
     @GetMapping("getUnit14")
     ResponseEntity<Unit14> getUnit14ById(Long id) {
-        return ResponseEntity.ok(unit14Repository.findById(id).get());
+        return ResponseEntity.ok(unit14Service.findById(id));
     }
 
     @GetMapping("getUnit15")
     ResponseEntity<Unit15> getUnit15ById(Long id) {
-        return ResponseEntity.ok(unit15Repository.findById(id).get());
+        return ResponseEntity.ok(unit15Service.findById(id));
     }
 
     @GetMapping("getUnit16")
     ResponseEntity<Unit16> getUnit16ById(Long id) {
-        return ResponseEntity.ok(unit16Repository.findById(id).get());
+        return ResponseEntity.ok(unit16Service.findById(id));
     }
 
     @GetMapping("getUnit17")
     ResponseEntity<Unit17> getUnit17ById(Long id) {
-        return ResponseEntity.ok(unit17Repository.findById(id).get());
+        return ResponseEntity.ok(unit17Service.findById(id));
     }
 
     @GetMapping("getUnit18")
     ResponseEntity<Unit18> getUnit18ById(Long id) {
-        return ResponseEntity.ok(unit18Repository.findById(id).get());
+        return ResponseEntity.ok(unit18Service.findById(id));
     }
 
 
     @PutMapping("updateMainInfo")
     ResponseEntity<String> updateMainInfo(@RequestBody MainInfo mainInfo) {
-        mainInfoRepository.save(mainInfo);
+        mainInfoService.save(mainInfo);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateStatus")
     ResponseEntity<String> updateStatus(@RequestBody UpdateReportStatusRequest request) {
-        MainInfo info = mainInfoRepository.findById(request.getId()).orElseThrow();
+        MainInfo info = mainInfoService.findById(request.getId());
         info.setStatus(request.getStatus());
         info.setRejectionReason(request.getRejectionReason());
-        mainInfoRepository.save(info);
+        mainInfoService.save(info);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateContactInfo")
     ResponseEntity<String> updateContactInfo(@RequestBody ContactInformation contactInformation) {
-        contactInfoRepository.save(contactInformation);
+        contactInfoService.save(contactInformation);
         return ResponseEntity.ok("Updated");
     }
     @PutMapping("updateUnit1")
     ResponseEntity<String> updateUnit1(@RequestBody Unit1 unit1) {
-        unit1Repository.save(unit1);
+        unit1Service.save(unit1);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit2")
     ResponseEntity<String> updateUnit2(@RequestBody Unit2 unit2) {
 
-        unit2Repository.save(unit2);
+        unit2Service.save(unit2);
         return ResponseEntity.ok("Updated");
     }
 
@@ -482,65 +480,65 @@ public class UnitController {
     @PutMapping("updateUnit9")
     ResponseEntity<String> updateUnit9(@RequestBody Unit9 unit9) {
 
-        unit9Repository.save(unit9);
+        unit9Service.save(unit9);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit10")
     ResponseEntity<String> updateUnit10(@RequestBody Unit10 unit10) {
-        unit10Repository.save(unit10);
+        unit10Service.save(unit10);
         return ResponseEntity.ok("Updated");
     }
     @PutMapping("updateUnit11")
     ResponseEntity<String> updateUnit11(@RequestBody Unit11 unit11) {
-        unit11Repository.save(unit11);
+        unit11Service.save(unit11);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit12")
     ResponseEntity<String> updateUnit12(@RequestBody Unit12 unit12) {
 
-        unit12Repository.save(unit12);
+        unit12Service.save(unit12);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit13")
     ResponseEntity<String> updateUnit13(@RequestBody Unit13 unit13) {
 
-        unit13Repository.save(unit13);
+        unit13Service.save(unit13);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit14")
     ResponseEntity<String> updateUnit14(@RequestBody Unit14 unit14) {
-        unit14Repository.save(unit14);
+        unit14Service.save(unit14);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit15")
     ResponseEntity<String> updateUnit15(@RequestBody Unit15 unit15) {
 
-        unit15Repository.save(unit15);
+        unit15Service.save(unit15);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit16")
     ResponseEntity<String> updateUnit16(@RequestBody Unit16 unit16) {
 
-        unit16Repository.save(unit16);
+        unit16Service.save(unit16);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit17")
     ResponseEntity<String> updateUnit17(@RequestBody Unit17 unit17) {
-        unit17Repository.save(unit17);
+        unit17Service.save(unit17);
         return ResponseEntity.ok("Updated");
     }
 
     @PutMapping("updateUnit18")
     ResponseEntity<String> updateUnit18(@RequestBody Unit18 unit18) {
 
-        unit18Repository.save(unit18);
+        unit18Service.save(unit18);
         return ResponseEntity.ok("Updated");
     }
 

@@ -5,9 +5,9 @@ import com.example.database.dto.CreateReportRequest;
 import com.example.database.dto.ReferenceResponse;
 import com.example.database.enteties.MainInfo;
 import com.example.database.enteties.User;
-import com.example.database.repositories.UserRepository;
 import com.example.database.service.AuthenticationService;
 import com.example.database.service.ReportCreationService;
+import com.example.database.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ public class AdminController {
     private AuthenticationService authenticationService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private ReportCreationService reportCreationService;
@@ -57,7 +57,7 @@ public class AdminController {
             return ResponseEntity.badRequest().build();
         }
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userService.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         if (user.getEducationalInstitution() == null) {

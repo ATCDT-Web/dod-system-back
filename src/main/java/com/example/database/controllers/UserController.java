@@ -3,6 +3,7 @@ package com.example.database.controllers;
 import com.example.database.dto.UpdateUserRequest;
 import com.example.database.enteties.User;
 import com.example.database.repositories.UserRepository;
+import com.example.database.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,14 +23,14 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    UserRepository repository;
+    UserService repository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @GetMapping("getAllUsers")
     List<User> getAllUsers(){
-        return (List<User>) repository.findAll();
+        return  repository.findAll();
     }
 
     @GetMapping("{id}")
