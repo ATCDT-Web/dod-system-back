@@ -23,5 +23,21 @@ public class Unit6Service {
     public Unit6Response sumAllByOrganizationName(String organizationName){
         return unit6Repository.sumAllByOrganizationName(organizationName);
     }
+    public Unit6Response sumAllByOrganizations(java.util.List<String> organizationNames) {
+        long hiking = 0;
+        long excursions = 0;
+        long inFieldExpeditions = 0;
+
+        for (String name : organizationNames) {
+            Unit6Response response = unit6Repository.sumAllByOrganizationName(name);
+            if (response != null) {
+                hiking += response.getHiking() != null ? response.getHiking() : 0;
+                excursions += response.getExcursions() != null ? response.getExcursions() : 0;
+                inFieldExpeditions += response.getInFieldExpeditions() != null ? response.getInFieldExpeditions() : 0;
+            }
+        }
+
+        return new Unit6Response(hiking, excursions, inFieldExpeditions);
+    }
 
 }

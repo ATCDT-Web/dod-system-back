@@ -39,7 +39,23 @@ public class Unit4Service {
                 sumArrays(units, Unit4::getNumberOfStudentsAdditionalGeneralEducationPrograms)
         );
     }
-
+    public Unit4Response sumAllByOrganizations(List<String> organizationNames) {
+        List<Unit4> units = new java.util.ArrayList<>();
+        for (String name : organizationNames) {
+            units.addAll(unit4Repository.findByOrganizationName(name));
+        }
+        return new Unit4Response(
+                sumArrays(units, Unit4::getTechnical),
+                sumArrays(units, Unit4::getNaturalScience),
+                sumArrays(units, Unit4::getTourismAndLocalHistory),
+                sumArrays(units, Unit4::getSocialAndHumanitarian),
+                sumArrays(units, Unit4::getArtisticOrientation),
+                sumArrays(units, Unit4::getPhysicalEducationAndSports),
+                sumArrays(units, Unit4::getPreprofessionalProgramsInTheFieldOfArts),
+                sumArrays(units, Unit4::getAdditionalEducationalProgramsSportsTraining),
+                sumArrays(units, Unit4::getNumberOfStudentsAdditionalGeneralEducationPrograms)
+        );
+    }
     private Long[] sumArrays(List<Unit4> units, Function<Unit4, Integer[]> arrayGetter) {
         Long[] result = new Long[17];
         Arrays.fill(result, 0L);

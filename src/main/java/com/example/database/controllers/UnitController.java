@@ -16,8 +16,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -26,6 +29,14 @@ public class UnitController {
 
     @Autowired
     ExcelExportService excelService;
+
+    @Autowired
+    private ReportCreationService reportCreationService;
+    @Autowired
+    private ExcelImportService excelImportService;
+    @Autowired
+    private ReportDeletionService reportDeletionService;
+
     @Autowired
     MainInfoRepository mainInfoRepository;
 
@@ -82,15 +93,28 @@ public class UnitController {
 
     @Autowired
     Unit18Repository unit18Repository;
-
     @Autowired
-    InitService initService;
+    UserRepository userRepository;
+
 
     @PostMapping("initReference")
     ResponseEntity<ReferenceResponse> initReference(@RequestBody MainInfo mainInfo) {
-        return initService.initReference(mainInfo);
+        MainInfo created = reportCreationService.createEmptyReport(mainInfo);
+        return ResponseEntity.ok(new ReferenceResponse(created.getId()));
     }
 
+    @DeleteMapping("delete/{reportId}")
+    ResponseEntity<String> deleteReport(@PathVariable Long reportId) {
+        reportDeletionService.deleteReport(reportId);
+        return ResponseEntity.ok("Deleted");
+    }
+
+    @PostMapping(value = "importExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<ImportExcelResponse> importExcel(@RequestParam Long reportId,
+                                                    @RequestParam(required = false, defaultValue = "partial") String mode,
+                                                    @RequestPart("files") List<MultipartFile> files) {
+        return ResponseEntity.ok(excelImportService.importExcel(reportId, files, mode));
+    }
     @GetMapping("getReportUnit1")
     ResponseEntity<Unit1Response> getReportUnit1(@RequestParam String organizationName) {
         return ResponseEntity.ok(unit1Repository.sumAllByOrganizationName(organizationName));
@@ -204,6 +228,67 @@ public class UnitController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=unit8-report-" + organizationName + ".xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping("/export/unit/{unit}/district/{district}")
+    public ResponseEntity<ByteArrayResource> exportUnitByDistrict(@PathVariable int unit, @PathVariable String district) {
+        List<String> orgs = userRepository.findByDistrict(district).stream()
+                .map(User::getEducationalInstitution)
+                .filter(name -> name != null && !name.isBlank())
+                .collect(Collectors.toSet())
+                .stream()
+                .toList();
+
+        if (orgs.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ByteArrayInputStream in;
+        String filename;
+        switch (unit) {
+            case 3 -> {
+                Unit3And5Response summary = unit3Service.sumAllByOrganizations(orgs);
+                in = excelService.exportUnit345SummaryToExcel(summary, 16, 6, HeaderType.UNIT3);
+                filename = "unit3-report-" + district + ".xlsx";
+            }
+            case 4 -> {
+                Unit4Response summary = unit4Service.sumAllByOrganizations(orgs);
+                in = excelService.exportUnit345SummaryToExcel(summary, 17, 14, HeaderType.UNIT4);
+                filename = "unit4-report-" + district + ".xlsx";
+            }
+            case 5 -> {
+                Unit3And5Response summary = unit5Service.sumAllByOrganizations(orgs);
+                in = excelService.exportUnit345SummaryToExcel(summary, 5, 23, HeaderType.UNIT5);
+                filename = "unit5-report-" + district + ".xlsx";
+            }
+            case 6 -> {
+                Unit6Response summary = unit6Service.sumAllByOrganizations(orgs);
+                in = excelService.exportUnit6SummaryToExcel(summary);
+                filename = "unit6-report-" + district + ".xlsx";
+            }
+            case 7 -> {
+                Unit7Response summary = unit7Service.sumAllByOrganizations(orgs);
+                in = excelService.exportUnit78SummaryToExcel(summary, 34);
+                filename = "unit7-report-" + district + ".xlsx";
+            }
+            case 8 -> {
+                Unit8Response summary = unit8Service.sumAllByOrganizations(orgs);
+                in = excelService.exportUnit78SummaryToExcel(summary, 44);
+                filename = "unit8-report-" + district + ".xlsx";
+            }
+            default -> {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(in.readAllBytes());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + filename)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);

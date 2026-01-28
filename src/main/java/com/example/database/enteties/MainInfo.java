@@ -42,6 +42,9 @@ public class MainInfo {
     @Column(length = 500)
     private String rejectionReason;
 
+    @Column(length = 255)
+    private String reportTitle;
+
     public Long getId() {
         return id;
     }
@@ -125,5 +128,13 @@ public class MainInfo {
 
     public void setRejectionReason(String rejectionReason) {
         this.rejectionReason = rejectionReason;
+    }
+
+    public String getReportTitle() {
+        return reportTitle;
+    }
+
+    public void setReportTitle(String reportTitle) {
+        this.reportTitle = reportTitle;
     }
 }

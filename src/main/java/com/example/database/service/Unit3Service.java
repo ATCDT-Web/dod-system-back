@@ -38,6 +38,22 @@ public class Unit3Service {
                 sumArrays(units, Unit3::getAdditionalEducationalProgramsSportsTraining)
         );
     }
+    public Unit3And5Response sumAllByOrganizations(List<String> organizationNames) {
+        List<Unit3> units = new java.util.ArrayList<>();
+        for (String name : organizationNames) {
+            units.addAll(unit3Repository.findByOrganizationName(name));
+        }
+        return new Unit3And5Response(
+                sumArrays(units, Unit3::getTechnical),
+                sumArrays(units, Unit3::getNaturalScience),
+                sumArrays(units, Unit3::getTourismAndLocalHistory),
+                sumArrays(units, Unit3::getSocialAndHumanitarian),
+                sumArrays(units, Unit3::getArtisticOrientation),
+                sumArrays(units, Unit3::getPhysicalEducationAndSports),
+                sumArrays(units, Unit3::getPreprofessionalProgramsInTheFieldOfArts),
+                sumArrays(units, Unit3::getAdditionalEducationalProgramsSportsTraining)
+        );
+    }
 
     private Long[] sumArrays(List<Unit3> units, Function<Unit3, Integer[]> arrayGetter) {
         Long[] result = new Long[16];

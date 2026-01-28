@@ -39,6 +39,23 @@ public class Unit8Service {
                 sumArrays(units, Unit8::getOtherStaff)
         );
     }
+    public Unit8Response sumAllByOrganizations(List<String> organizationNames) {
+        List<Unit8> units = new java.util.ArrayList<>();
+        for (String name : organizationNames) {
+            units.addAll(unit8Repository.findByOrganizationName(name));
+        }
+        return new Unit8Response(
+                sumArrays(units, Unit8::getTheNumberOfEmployeesIsTotal),
+                sumArrays(units, Unit8::getSeniorStaffTotal),
+                sumArrays(units, Unit8::getSeniorStaff),
+                sumArrays(units, Unit8::getDeputyHeads),
+                sumArrays(units, Unit8::getBranchManager),
+                sumArrays(units, Unit8::getTeachingStaffTotal),
+                sumArrays(units, Unit8::getTeachersOfAdditionalEducation),
+                sumArrays(units, Unit8::getTrainingAndSupportStaff),
+                sumArrays(units, Unit8::getOtherStaff)
+        );
+    }
     private Long[] sumArrays(List<Unit8> units, Function<Unit8, Integer[]> arrayGetter) {
         Long[] result = new Long[11];
         Arrays.fill(result, 0L);

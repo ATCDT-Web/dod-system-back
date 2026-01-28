@@ -40,6 +40,24 @@ public class Unit7Service {
                 sum(units)
         );
     }
+    public Unit7Response sumAllByOrganizations(List<String> organizationNames) {
+        List<Unit7> units = new java.util.ArrayList<>();
+        for (String name : organizationNames) {
+            units.addAll(unit7Repository.findByOrganizationName(name));
+        }
+        return new Unit7Response(
+                sumArrays(units, Unit7::getTheNumberOfEmployeesIsTotal),
+                sumArrays(units, Unit7::getSeniorStaffTotal),
+                sumArrays(units, Unit7::getSeniorStaff),
+                sumArrays(units, Unit7::getDeputyHeads),
+                sumArrays(units, Unit7::getBranchManager),
+                sumArrays(units, Unit7::getTeachingStaffTotal),
+                sumArrays(units, Unit7::getTeachersOfAdditionalEducation),
+                sumArrays(units, Unit7::getTrainingAndSupportStaff),
+                sumArrays(units, Unit7::getOtherStaff),
+                sum(units)
+        );
+    }
     private Long sum(List<Unit7> units){
         Long result = 0L;
         for (Unit7 unit : units) {
