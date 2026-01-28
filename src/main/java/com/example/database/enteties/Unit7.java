@@ -33,7 +33,7 @@ public class Unit7 {
     @Column
     private Integer[] otherStaff = new Integer[11];
 
-    @Column
+    @Column(name = "professional_development")
     private Integer professionalDevelopment;
 
     public Unit7() {
