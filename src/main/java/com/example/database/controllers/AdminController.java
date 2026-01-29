@@ -31,9 +31,12 @@ public class AdminController {
     private ReportCreationService reportCreationService;
 
     @PostMapping("/institutions")
-    public ResponseEntity<User> createInstitution(@RequestBody CreateInstitutionRequest request) {
+    public ResponseEntity<?> createInstitution(@RequestBody CreateInstitutionRequest request) {
         if (request.getInstitutionName() == null || request.getEmail() == null || request.getAdminName() == null) {
             return ResponseEntity.badRequest().build();
+        }
+        if(!userService.findByEmail(request.getEmail()).isEmpty()){
+            return ResponseEntity.ok("email exist");
         }
 
         User user = new User();
