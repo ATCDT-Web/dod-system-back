@@ -2,6 +2,7 @@ package com.example.database.controllers;
 
 import com.example.database.dto.AuthenticationRequest;
 import com.example.database.dto.AuthenticationResponse;
+import com.example.database.dto.RegisterRequest;
 import com.example.database.enteties.User;
 import com.example.database.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest user) {
         try {
-            authenticationService.registerUser(user);
+
+            authenticationService.registerUser(new User(user.getName(), user.getEmail(), user.getPassword(), user.getDistrict(),
+                    user.getEducationalInstitution(), user.getPosition(), user.getPhone(), user.getAddress()));
             return ResponseEntity.ok("User registered successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

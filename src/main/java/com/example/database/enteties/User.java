@@ -1,5 +1,6 @@
 package com.example.database.enteties;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,6 +42,21 @@ public class User implements UserDetails {
 
     @Column
     private Boolean isAdmin = false;
+
+    public User() {
+    }
+
+    public User(String name, String email, String password, String district, String educationalInstitution,
+                String position, String phone, String address) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.district = district;
+        this.educationalInstitution = educationalInstitution;
+        this.position = position;
+        this.phone = phone;
+        this.address = address;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -99,6 +115,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
