@@ -6,37 +6,72 @@ API Документация: OpenAPI 3.1 (Swagger)
 Контейнеризация: Docker   
 Аутентификация: JWT Token   
 
-Swagger UI: http://localhost:8082/swagger-ui/index.html   
-API документация: http://localhost:8082/v3/api-docs   
+## Запуск
+```text
+ docker-compose up --build
+```
 
-## Для регистрации пользователя передавать id НЕ нужно
 
-## Запросы
-
-### пример создания справки (POST), все разделы создадутся автоматически
-
-/api/unit/initReference
-
+## Запросы auth
+### /api/auth/register - регистрации (POST)
+Request body
 ```json
 {
-    "id": 0,
-    "organizationName": "Новая организация",
-    "postalAddress": "Адрес",
-    "okudFormCode": "000000",
-    "okpoOrgCode": "000000000",
-    "changeDate1": "2026-01-23T19:37:32.1992",
-    "changeNumber1": "INIT-001",
-    "changeDate2": "2026-01-23T19:37:32.1992",
-    "changeNumber2": "INIT-002"
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "district": "string",
+  "educationalInstitution": "string",
+  "position": "string",
+  "phone": "string",
+  "address": "string"
+}
+```
+Response
+```text
+User registered successfully
+```
+
+### /api/auth/login - авторизация (POST)
+Request Body
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+Response
+```json
+{
+  "token": "token",
+  "email": "string",
+  "name": "string",
+  "isAdmin": false,
+  "type": "string"
+}
+```
+## Запросы unit
+### /api/unit/initReference - создания справки (POST), все разделы создадутся автоматически
+Request body
+```json
+{
+  "organizationName": "string",
+  "postalAddress": "string",
+  "okudFormCode": "string",
+  "okpoOrgCode": "string",
+  "changeDate1": "2026-01-27T20:32:18.485Z",
+  "changeNumber1": "string",
+  "changeDate2": "2026-01-27T20:32:18.485Z",
+  "changeNumber2": "string",
+  "status": "string",
+  "rejectionReason": "string"
 }
 
 ```
 
-### Получение списка организаций с пагинацией GET
+### /api/unit/getMainInfoList - получение списка организаций с пагинацией GET
 
-/api/unit/getMainInfoList
-
-Параметры: pageable
+Параметры: pageable   
 Пример запроса:
 ```text
 GET /api/unit/getMainInfoList?page=0&size=10
@@ -45,30 +80,54 @@ GET /api/unit/getMainInfoList?page=0&size=10
 ```json
 
 {
-    "totalPages": 5,
-    "totalElements": 47,
-    "size": 10,
-    "content": [
-        {
-            "id": 1,
-            "organizationName": "МБОУ Лицей №1",
-            "postalAddress": "г. Москва, ул. Ленина, д. 1",
-            "okudFormCode": "123456",
-            "okpoOrgCode": "987654321",
-            "changeDate1": "2026-01-23T19:37:32.2222",
-            "changeNumber1": "CHG-001",
-            "changeDate2": "2026-01-23T19:37:32.2222",
-            "changeNumber2": "CHG-002"
-        }
-    ]
+  "content": [
+    {
+      "changeDate1": "2026-01-27T00:00:00.000Z",
+      "changeDate2": "2026-01-27T00:00:00.000Z",
+      "changeNumber1": "string",
+      "changeNumber2": "string",
+      "id": 1,
+      "okpoOrgCode": "string",
+      "okudFormCode": "string",
+      "organizationName": "string",
+      "postalAddress": "string",
+      "rejectionReason": "string",
+      "reportTitle": null,
+      "status": "string"
+    }
+  ],
+  "empty": false,
+  "first": true,
+  "last": true,
+  "number": 0,
+  "numberOfElements": 1,
+  "pageable": {
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 5,
+    "paged": true,
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "unpaged": false
+  },
+  "size": 5,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "totalElements": 1,
+  "totalPages": 1
 }
 
 ```
 
 
-### пример обновления раздела (PUT)
-
-Запрос: /api/unit/updateUnit18
+### /api/unit/updateUnit18 - обновление раздела (PUT)
+Request Body
 ```json
 {
     "id": 1,
@@ -78,9 +137,12 @@ GET /api/unit/getMainInfoList?page=0&size=10
     "otherAttractedFunds": 20000
 }
 ```
-### пример получения раздела (GET)
-Запрос: /api/unit/getUnit18
-Параметры: id (required)
+Response
+```text
+Updated
+```
+### /api/unit/getUnit18 - получения раздела (GET)
+Параметры: id (required)   
 Ответ (Unit18):
 ```json
 {
@@ -90,7 +152,131 @@ GET /api/unit/getMainInfoList?page=0&size=10
     "otherAttractedFunds": 20000
 }
 ```
+### /api/unit/getReportUnit5 - получение суммы по разделу по имени организации (GET)
+Параметры: organizationName   
+Ответ: 
+```json
+{
+  "technical": [0,0,0,0,0],
+  "naturalScience": [0,0,0,0,0],
+  "tourismAndLocalHistory": [0,0,0,0,0],
+  "socialAndHumanitarian": [0,0,0,0,0],
+  "artisticOrientation": [0,0,0,0,0],
+  "physicalEducationAndSports": [0,0,0,0,0],
+  "preprofessionalProgramsInTheFieldOfArts": [0,0,0,0,0],
+  "additionalEducationalProgramsSportsTraining": [0,0,0,0,0]
+}
+```
 
+### api/unit/export/unit7/{organizationName} - получение отчета по сумме в excel формате (GET)
+Ответ: excel файл
+
+### api/unit/export/unit/{unit}/district/{district} - получение отчета по разделу (GET)
+Ответ: excel файл
+
+### api/unit/delete/{reportId} - удаление отчета (DELETE)
+Ответ: Deleted
+
+### api/unit/importExcel - импорт эксель таблицы (POST)
+Params: reportId, mode
+RequestBody: excel файл
+
+## Запросы user 
+### api/user/update/{id} - обновление пользователя (UPDATE)
+Request Body
+```json
+{
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "district": "string",
+  "educationalInstitution": "string",
+  "position": "string",
+  "admin": true
+}
+```
+Response
+```json
+{
+  "id": 0,
+  "name": "string",
+  "email": "string",
+  "district": "string",
+  "educationalInstitution": "string",
+  "position": "string",
+  "phone": "string",
+  "address": "string",
+  "enabled": true,
+  "admin": true,
+  "authorities": [
+    {
+      "authority": "string"
+    }
+  ],
+  "username": "string",
+  "accountNonExpired": true,
+  "accountNonLocked": true,
+  "credentialsNonExpired": true
+}
+```
+
+### api/user/{id} - получение пользователя (GET)
+
+Response
+```json
+{
+  "id": 0,
+  "name": "string",
+  "email": "string",
+  "district": "string",
+  "educationalInstitution": "string",
+  "position": "string",
+  "phone": "string",
+  "address": "string",
+  "enabled": true,
+  "admin": true,
+  "authorities": [
+    {
+      "authority": "string"
+    }
+  ],
+  "username": "string",
+  "accountNonExpired": true,
+  "accountNonLocked": true,
+  "credentialsNonExpired": true
+}
+```
+
+### api/user/getAllUsers - получение всех пользователей (GET)
+
+Response
+```json
+[
+  {
+    "id": 0,
+    "name": "string",
+    "email": "string",
+    "district": "string",
+    "educationalInstitution": "string",
+    "position": "string",
+    "phone": "string",
+    "address": "string",
+    "enabled": true,
+    "admin": true,
+    "authorities": [
+      {
+        "authority": "string"
+      }
+    ],
+    "username": "string",
+    "accountNonExpired": true,
+    "accountNonLocked": true,
+    "credentialsNonExpired": true
+  }
+]
+```
+
+### api/user/delete/{id} - удаление пользователя (DELETE)
 
 
 
