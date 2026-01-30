@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,20 @@ public class UserController {
     @GetMapping("getAllUsers")
     List<User> getAllUsers(){
         return  repository.findAll();
+    }
+
+    @GetMapping("me")
+    ResponseEntity<User> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String email = authentication.getName();
+        Optional<User> existingUser = repository.findByEmail(email);
+        if (existingUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(existingUser.get());
     }
 
     @GetMapping("{id}")
