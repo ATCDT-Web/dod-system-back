@@ -1,9 +1,8 @@
 services:
   db:
     image: postgres:16
+    user: "999:999"
     env_file: .env
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -11,6 +10,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
+    networks:
+      - internal
 
   app:
     build:
@@ -22,6 +23,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
+    networks:
+      - internal
+networks:
+  internal:
 volumes:
   db_data:
